@@ -1,0 +1,6 @@
+env : "local" # local, dev, prod
+storage_path: "./storage/storage.db"
+http_server:
+  address: "0.0.0.0:3001"
+  timeout: 4s # время на чтения запроса и такое же время на отправку ответа
+  idle_timeout: 60s # время жизни соединения с клиентом 

@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - connect
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  note_value_api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+    environment:
+      CONFIG_PATH: "config/local.yaml"
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres
+    ports:
+      - "127.0.0.1:3001:3001"
+    networks:
+      - connect
+
+  
+
+volumes:
+  postgres_data:
+
+networks:
+  connect:
+    driver: bridge
